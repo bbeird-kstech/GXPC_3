@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 
 
 class BaseView(tk.Frame):
@@ -56,7 +57,10 @@ class EquipmentAddView(BaseView):
                        ]
 
         self.entries = {}
+        self.dropdown_vars = []  # List to hold StringVar for each dropdown
         self.create_input_table()
+        self.dropdown_var = tk.StringVar(self)
+        self.create_dropdown()
         self.create_buttons2()
 
     def create_input_table(self):
@@ -67,6 +71,30 @@ class EquipmentAddView(BaseView):
             entry.grid(row=i, column=1, padx=10, pady=5, sticky="e")
             self.entries[label] = entry
 
+    def create_dropdown(self):
+        # Example options for dropdown list
+        dropdown_options = [
+            ("Units:", ["C", "F", "%RH", '"H20"', "PSI", "RPM", "SEC", "MIN"]),
+            ("Cal Tol.:", ["0.1", "0.001", "5.0"]),
+            ("Proc Tol:", ["0.2", "0.002", "10.0"]),
+            ("Frequency:", ["Monthly", "3 Months", "6 Months", "12 Months"]),
+            ("Criticality:", ["GMP Critical", "GMP Non-Critical", "Non-GMP"]),
+            ("Client:", ["Your Mom", "Your Pop", "Acme Rockets"])
+        ]
+
+        # Place dropdown below the last label +1
+        dropdown_start_row = len(self.labels)
+
+        for i, (label_text, options) in enumerate(dropdown_options):
+            label = tk.Label(self, text=label_text)
+            label.grid(row=dropdown_start_row + i, column=0, padx=10, pady=5, sticky='w')
+
+            var = tk.StringVar(self)
+            var.set(options[0])
+            self.dropdown_vars.append(var)
+            dropdown = ttk.Combobox(self, textvariable=var, values=options)
+            dropdown.grid(row=dropdown_start_row + i, column=1, padx=10, pady=5, sticky="e")
+
     def create_buttons2(self):
         button_configs = [
             {"text": "Submit", "command": self.handle_submit},
@@ -76,7 +104,10 @@ class EquipmentAddView(BaseView):
         ]
 
         button_frame = tk.Frame(self)
-        button_frame.grid(row=len(self.labels), columnspan=2, pady=10)
+
+        # Place the button frame below the dropdown + 1
+        button_frame_row = len(self.labels) + len(self.dropdown_vars)
+        button_frame.grid(row=button_frame_row, columnspan=2, pady=10)
 
         for i, config in enumerate(button_configs):
             button = tk.Button(button_frame, text=config["text"], command=config["command"])
