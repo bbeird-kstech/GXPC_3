@@ -2,14 +2,14 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.base import Base
 from models.equipment_owner import EquipmentOwner
-from models.unit import Unit
-from models.calibration_tolerance import CalibrationTolerance
-from models.process_tolerance import ProcessTolerance
-from models.frequency import Frequency
-from models.criticality import Criticality
-from models.client import Client
+# from models.unit import Unit
+# from models.calibration_tolerance import CalibrationTolerance
+# from models.process_tolerance import ProcessTolerance
+# from models.frequency import Frequency
+# from models.criticality import Criticality
+# from models.client import Client
 
-DATABASE_URL = 'postgresql://postgres:Kstech070@localhost/ExploreDev'
+DATABASE_URL = 'postgresql://postgres:Kstech070@localhost/GXPC_Dev'
 
 
 class Database:
@@ -21,8 +21,8 @@ class Database:
     def get_session(self):
         return self.Session()
 
-    def get_equipment_owners(self):
+    def get_client_names(self):
         session = self.get_session()
-        equipment_owners = session.query(EquipmentOwner).all()
+        clients = session.query(EquipmentOwner.client_name).all()
         session.close()
-        return equipment_owners
+        return [client.client_name for client in clients]
