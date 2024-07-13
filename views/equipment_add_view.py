@@ -13,11 +13,12 @@ class EquipmentAddView(BaseView):
             # Add more buttons as needed
         }
 
-        self.labels = ["Manufacturer:",
-                       "Model Number:",
-                       "Serial Number:",
-                       "Description:",
-                       "Number Of Calibration Points:",
+        self.labels = [ "client_inst_id",
+                        "description",
+                        "manufacturer",
+                        "model",
+                        "serial_number",
+                        "num_cal_pts",
                        ]
 
         self.entries = {}
@@ -44,12 +45,12 @@ class EquipmentAddView(BaseView):
     def create_dropdown(self):
         # Example options for dropdown list
         dropdown_options = [
-            ("Units:", ["C", "F", "%RH", '"H20"', "PSI", "RPM", "SEC", "MIN"]),
-            ("Cal Tol.:", ["0.1", "0.001", "5.0"]),
-            ("Proc Tol:", ["0.2", "0.002", "10.0"]),
-            ("Frequency:", ["Monthly", "3 Months", "6 Months", "12 Months"]),
-            ("Criticality:", ["GMP Critical", "GMP Non-Critical", "Non-GMP"]),
-            ("Client:", [])  # Initializing with an empty list
+            ("units", []),
+            ("cal_tol", ["0.1", "0.001", "5.0"]),
+            ("proc_tol", ["0.2", "0.002", "10.0"]),
+            ("frequency", ["Monthly", "3 Months", "6 Months", "12 Months"]),
+            ("criticality", ["GMP Critical", "GMP Non-Critical", "Non-GMP"]),
+            ("client", [])  # Initializing with an empty list
         ]
 
         # Place dropdown below the last label +1
@@ -63,7 +64,7 @@ class EquipmentAddView(BaseView):
             var.set("")
             var.trace_add("write", self.validate_inputs)  # Add trace to validate inputs on change
             self.dropdown_vars[label_text] = var
-            dropdown = ttk.Combobox(self, textvariable=var, values=options, postcommand=lambda event=None, lt=label_text: self.controller.populate_dropdown(label_text))
+            dropdown = ttk.Combobox(self, textvariable=var, values=options, postcommand=lambda event=None, lt=label_text: self.controller.populate_dropdown(lt))
             dropdown.grid(row=dropdown_start_row + i, column=1, padx=10, pady=5, sticky="e")
             self.combo_boxes[label_text] = dropdown
 
@@ -105,7 +106,25 @@ class EquipmentAddView(BaseView):
 
 
     def handle_submit(self):
-        pass
+        # gather data from the text boxes and dropdowns
+        data = {label: self.entries[label].get() for label in self.labels}  # get all of the data from the text boxes
+        data.update({label: self.dropdown_vars[label].get() for label in self.dropdown_vars})  # add the combobox selections
+
+        # validate the data...for now, no empty fields
+        if not self.validate_data(data):
+            print("Validation failed.")
+            return
+
+        # pass data to the controller to save it to the database
+        self.controller.save_equipment_data(data)
+        print("Data submitted successfully.")
+
+    def validate_data(self, data):
+        # Example validation logic, you can customize it as per your requirements
+        for value in data.values():
+            if not value:  # Check if any value is empty
+                return False
+        return True
 
     def handle_clear(self):
         pass  # Implement logic for Modify button
