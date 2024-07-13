@@ -1,5 +1,5 @@
-from controller import AppController
+from home_con import HomeCon
 
 if __name__ == "__main__":
-    app = AppController()
-    app.run()
+    home_controller = HomeCon()
+    home_controller.run()

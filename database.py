@@ -10,7 +10,7 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 # Retrieve list of equipment owners
-equipment_owners = session.query(EquipmentOwner).all()
+#equipment_owners = session.query(EquipmentOwner).all()
 
-for owner in equipment_owners:
-    print(f"Owner ID: {owner.clientid}, Client: {owner.client_name}")
+#for owner in equipment_owners:
+#    print(f"Owner ID: {owner.clientid}, Client: {owner.client_name}")
