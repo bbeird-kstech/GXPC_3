@@ -1,4 +1,5 @@
-import tkinter as tk
+#import tkinter as tk
+import customtkinter as ctk
 from views.app_view import AppView
 from views.home_view import HomeView
 from views.equipment_home_view import EquipmentHomeView
@@ -11,7 +12,8 @@ from database.db import Database
 class HomeCon:
 
     def __init__(self):
-        self.root = tk.Tk()
+        #self.root = tk.Tk()
+        self.root = ctk.CTk()
         self.view = AppView(self.root, self)
         self.database = Database()
         self.equipment_con = EquipmentCon(self)

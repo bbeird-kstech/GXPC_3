@@ -3,12 +3,21 @@ from views.equipment_home_view import EquipmentHomeView
 from views.equipment_add_view import EquipmentAddView
 
 
+def convert_to_string(values):
+    return [str(value) for value in values]
+
+
 class EquipmentCon:
     def __init__(self, main_controller):
         self.main_controller = main_controller
         self.add_view = None
         self.home_view = None
         self.combo_list = None
+
+    def initialize_dropdowns(self):
+        # Call populate_dropdown for each dropdown after the view is fully initialized
+        for dropdown_label in self.add_view.combo_boxes.keys():
+            self.populate_dropdown(dropdown_label)
 
     def show_equipment_home_view(self):
         if self.home_view is None:
@@ -19,8 +28,13 @@ class EquipmentCon:
         if self.add_view is None:
             self.add_view = EquipmentAddView(self.main_controller.view.right_frame, self)
         self.main_controller.show_view("EquipmentAdd")
+        self.initialize_dropdowns()
+
+    # this stupid little function is because customtkinter comboboxes
+    # cannot handle types other than string.
 
     def populate_dropdown(self, label_text):
+        print(f"populating {label_text}")
         if label_text == "units":
             self.combo_list = self.main_controller.database.get_units()
         elif label_text == "cal_tol":
@@ -34,6 +48,7 @@ class EquipmentCon:
         elif label_text == "client":
             self.combo_list = self.main_controller.database.get_client_names()
 
+        self.combo_list = convert_to_string(self.combo_list)
         self.add_view.update_dropdown_options(label_text, self.combo_list)
 
     def save_equipment_data(self, data):

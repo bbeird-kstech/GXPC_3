@@ -1,18 +1,21 @@
-import tkinter as tk
+# import tkinter as tk
+import customtkinter as ctk
 from views.home_view import HomeView
 
 
-class AppView(tk.Frame): # initializes the main application, watches for button presses.
+class AppView(ctk.CTkFrame): # initializes the main application, watches for button presses.
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
         parent.title("MVC Tkinter Example")
 
         # Create the left and right frames
-        self.left_frame = tk.Frame(self, bg='gray')
+        # self.left_frame = tk.Frame(self, bg='gray')
+        self.left_frame = ctk.CTkFrame(self, bg_color='gray')
         self.left_frame.pack(side='left', fill='y')
 
-        self.right_frame = tk.Frame(self, bg='white')
+        # self.right_frame = tk.Frame(self, bg='white')
+        self.right_frame = ctk.CTkFrame(self, bg_color='white')
         self.right_frame.pack(side='right', fill='both', expand=True)
 
         # List of button names
@@ -20,7 +23,8 @@ class AppView(tk.Frame): # initializes the main application, watches for button 
 
         self.buttons = []
         for i, name in enumerate(self.button_names):
-            button = tk.Button(self.left_frame, text=name, command=lambda i=i: self.on_button_click(i))
+            # button = tk.Button(self.left_frame, text=name, command=lambda i=i: self.on_button_click(i))
+            button = ctk.CTkButton(self.left_frame, text=name, command=lambda i=i: self.on_button_click(i))
             button.pack(fill='x', pady=5, padx=5)
             self.buttons.append(button)
 

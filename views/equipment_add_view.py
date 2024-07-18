@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import customtkinter as ctk
 from .base_view import BaseView
 
 
@@ -9,7 +10,7 @@ class EquipmentAddView(BaseView):
 
         # Initialize buttons dictionary
         self.buttons = {
-            "Submit": tk.Button(self, text="Submit", command=self.handle_submit),
+            "Submit": ctk.CTkButton(self, text="Submit", command=self.handle_submit),
             # Add more buttons as needed
         }
 
@@ -29,49 +30,54 @@ class EquipmentAddView(BaseView):
         self.create_dropdown()
         self.create_buttons2()
 
+
     def set_controller(self, controller):
         self.controller = controller
 
     def create_input_table(self):
         for i, label in enumerate(self.labels):
-            label_widget = tk.Label(self, text=label)
+            label_widget = ctk.CTkLabel(self, text=label)
             label_widget.grid(row=i, column=0, padx=10, pady=5, sticky="w")
             var = tk.StringVar(self)
             var.trace_add("write", self.validate_inputs)  # Add trace to validate inputs on change
-            entry = tk.Entry(self, textvariable=var)
+            entry = ctk.CTkEntry(self, textvariable=var)
             entry.grid(row=i, column=1, padx=10, pady=5, sticky="e")
             self.entries[label] = entry
 
     def create_dropdown(self):
-        # Example options for dropdown list
+        # Initialize Dropdowns with empty list
         dropdown_options = [
-            ("units", []),
-            ("cal_tol", ["0.1", "0.001", "5.0"]),
-            ("proc_tol", ["0.2", "0.002", "10.0"]),
-            ("frequency", ["Monthly", "3 Months", "6 Months", "12 Months"]),
-            ("criticality", ["GMP Critical", "GMP Non-Critical", "Non-GMP"]),
-            ("client", [])  # Initializing with an empty list
+            ("units", ["*"]),
+            ("cal_tol", ["*"]),
+            ("proc_tol", ["*"]),
+            ("frequency", ["*"]),
+            ("criticality", ["*"]),
+            ("client", ["*"])
         ]
 
         # Place dropdown below the last label +1
         dropdown_start_row = len(self.labels)
 
         for i, (label_text, options) in enumerate(dropdown_options):
-            label = tk.Label(self, text=label_text)
+            label = ctk.CTkLabel(self, text=label_text)
             label.grid(row=dropdown_start_row + i, column=0, padx=10, pady=5, sticky='w')
 
             var = tk.StringVar(self)
             var.set("")
             var.trace_add("write", self.validate_inputs)  # Add trace to validate inputs on change
             self.dropdown_vars[label_text] = var
-            dropdown = ttk.Combobox(self, textvariable=var, values=options, postcommand=lambda event=None, lt=label_text: self.controller.populate_dropdown(lt))
+            dropdown = ctk.CTkComboBox(self, variable=var, values=options)
+            #dropdown.bind("<Button-2>", lambda event, lt=label_text: self.controller.populate_dropdown(lt))
             dropdown.grid(row=dropdown_start_row + i, column=1, padx=10, pady=5, sticky="e")
             self.combo_boxes[label_text] = dropdown
+            #self.controller.populate_dropdown(label_text)
 
     def update_dropdown_options(self, label_text, new_options):
+        print(f"attempting to update {label_text} with {new_options}")
         if label_text in self.combo_boxes:
+            # self.combo_boxes[label_text].configure(values=new_options)
             combobox = self.combo_boxes[label_text]
-            combobox['values'] = new_options
+            combobox.configure(values = new_options)
             combobox.set('')  # Clear current selection
             combobox.update_idletasks()
 
@@ -83,14 +89,14 @@ class EquipmentAddView(BaseView):
             # Add more buttons as needed
         ]
 
-        self.button_frame = tk.Frame(self)
+        self.button_frame = ctk.CTkFrame(self)
 
         # Place the button frame below the dropdown + 1
         button_frame_row = len(self.labels) + len(self.dropdown_vars)
         self.button_frame.grid(row=button_frame_row, columnspan=2, pady=10)
 
         for i, config in enumerate(self.button_configs):
-            button = tk.Button(self.button_frame, text=config["text"], command=config["command"])
+            button = ctk.CTkButton(self.button_frame, text=config["text"], command=config["command"])
             button.grid(row=0, column=i, padx=5, pady=5)
 
     def validate_inputs(self, *args):
@@ -100,9 +106,9 @@ class EquipmentAddView(BaseView):
 
         # Enable or disable the Submit button based on validation
         if all_valid:
-            self.buttons["Submit"].config(state=tk.NORMAL)
+            self.buttons["Submit"].configure(state=tk.NORMAL)
         else:
-            self.buttons["Submit"].config(state=tk.DISABLED)
+            self.buttons["Submit"].configure(state=tk.DISABLED)
 
 
     def handle_submit(self):

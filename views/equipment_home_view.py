@@ -1,4 +1,5 @@
 import tkinter as tk
+import customtkinter as ctk
 from .base_view import BaseView
 
 
@@ -17,7 +18,7 @@ class EquipmentHomeView(BaseView):
         ]
 
         for config in button_configs:
-            button = tk.Button(self, text=config["text"], command=config["command"], fg=config["fg"], bg=config["bg"],)
+            button = ctk.CTkButton(self, text=config["text"], command=config["command"])
             button.pack(pady=10)
 
     def handle_add(self):
