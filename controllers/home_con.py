@@ -1,3 +1,8 @@
+"""
+Home Controller
+
+Initializes Views, handles view switching.
+"""
 #import tkinter as tk
 import customtkinter as ctk
 from views.app_view import AppView
@@ -14,6 +19,9 @@ class HomeCon:
     def __init__(self):
         #self.root = tk.Tk()
         self.root = ctk.CTk()
+        # Set full-screen mode
+        self.root.attributes("-fullscreen", True)
+
         self.view = AppView(self.root, self)
         self.database = Database()
         self.equipment_con = EquipmentCon(self)
@@ -22,7 +30,7 @@ class HomeCon:
         self.setup_con = SetupCon(self)
         self.current_view = None
 
-        self.root.attributes("-fullscreen", True)
+
         self.show_view("Home")
 
 ############################################

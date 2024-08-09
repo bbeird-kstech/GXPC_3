@@ -1,3 +1,6 @@
+"""
+Starting point, Launches the Home controller.
+"""
 from home_con import HomeCon
 
 if __name__ == "__main__":
